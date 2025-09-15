@@ -1,31 +1,46 @@
 import Select from 'react-select'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { readAllInvoiceTrackerIds, readAllInvoiceTracker } from '../requests'
 
-export default function AddDocumentModal({ isOpen, onClose, onSave, accounts }) {
+export default function AddDocumentModal({ isOpen, onClose, onSave }) {
   const [documentFile, setDocumentFile] = useState(null)
   const [type, setType] = useState('0')
   const [selectedAccount, setSelectedAccount] = useState(null)
   const [selectedInvoice, setSelectedInvoice] = useState(null)
   const [cost, setCost] = useState('')
 
-  if (!isOpen) return null
+  const [invoices, setInvoices] = useState([])
+  const [invoiceTrackers, setInvoiceTrackers] = useState([])
 
-  // Mock invoices por account
-  const invoicesByAccount = {
-    1: [
-      { value: 101, label: 'Invoice 001-1' },
-      { value: 102, label: 'Invoice 002-1' },
-    ],
-    2: [{ value: 201, label: 'Invoice 001-2' }],
-    3: [
-      { value: 301, label: 'Invoice 001-3' },
-      { value: 302, label: 'Invoice 002-3' },
-      { value: 303, label: 'Invoice 003-3' },
-    ],
+  const getInvoiceTrackers = async () => {
+    let results = await readAllInvoiceTrackerIds();
+    results = results.map((acc) => ({ value: acc.id, label: acc.name }))
+    setInvoiceTrackers(results)
   }
 
-  const accountOptions = accounts.map((acc) => ({ value: acc.id, label: acc.name }))
-  const invoiceOptions = selectedAccount ? invoicesByAccount[selectedAccount.value] || [] : []
+  const getInvoiceTracker = async (id) => {
+    if(id == undefined) { return; }
+    let results = await readAllInvoiceTracker(id);
+    let parsedInvoices = results?.Invoices?.map((acc) => ({
+      value: acc.id,
+      label: new Date(acc.date).toLocaleString("pt-BR", {
+        month: "short",
+        year: "numeric"
+      }).replace(" de", "").toUpperCase()}))
+    setInvoices(parsedInvoices)
+  }
+
+  useEffect(() => {
+    getInvoiceTrackers();
+  }, [isOpen])
+
+  useEffect(() => {
+    if((invoiceTrackers?.length ?? []).length == 0) { return; }
+    setSelectedAccount(invoiceTrackers[0])
+    getInvoiceTracker(invoiceTrackers[0]?.value);
+  }, [invoiceTrackers])
+
+  if (!isOpen) return null
 
   const handleSave = () => {
     if (!documentFile || !selectedAccount || !selectedInvoice || !cost)
@@ -80,7 +95,7 @@ export default function AddDocumentModal({ isOpen, onClose, onSave, accounts }) 
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-1">Conta</label>
           <Select
-            options={accountOptions}
+            options={invoiceTrackers}
             value={selectedAccount}
             onChange={(acc) => {
               setSelectedAccount(acc)
@@ -94,7 +109,7 @@ export default function AddDocumentModal({ isOpen, onClose, onSave, accounts }) 
         <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-1">Invoice</label>
           <Select
-            options={invoiceOptions}
+            options={invoices}
             value={selectedInvoice}
             onChange={setSelectedInvoice}
             placeholder={selectedAccount ? 'Selecione uma invoice' : 'Selecione uma conta primeiro'}

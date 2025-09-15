@@ -3,47 +3,6 @@ import Select from 'react-select'
 import { readAllInvoiceTrackerIds, readAllInvoiceTracker } from "../requests"
 import GoBackButton from '../components/GoBackButton'
 
-// Mock de contas e faturas
-const accounts = [
-  { id: 1, name: 'Conta A' },
-  { id: 2, name: 'Conta B' },
-  { id: 3, name: 'Conta C' },
-]
-
-const mockInvoices = [
-  {
-    id: 1,
-    accountId: 1,
-    name: 'Fatura Março',
-    dueDate: '2025-03-15',
-    cost: 120.5,
-    status: 0,
-    receiptUploaded: false,
-    boletoUploaded: true,
-  },
-  {
-    id: 2,
-    accountId: 2,
-    name: 'Fatura Abril',
-    dueDate: '2025-04-10',
-    cost: 250.0,
-    status: 1,
-    receiptUploaded: true,
-    boletoUploaded: true,
-  },
-  {
-    id: 3,
-    accountId: 1,
-    name: 'Fatura Maio',
-    dueDate: '2025-05-20',
-    cost: 75.25,
-    status: 0,
-    receiptUploaded: false,
-    boletoUploaded: false,
-  },
-]
-
-
 export default function InvoicePage() {
   const [selectedAccount, setSelectedAccount] = useState(null)
   const [invoices, setInvoices] = useState([])
@@ -71,11 +30,6 @@ export default function InvoicePage() {
     getInvoiceTracker(invoiceTrackers[0]?.value);
   }, [invoiceTrackers])
 
-  // Filtra as invoices pela conta selecionada
-  const filteredInvoices = selectedAccount
-    ? invoices.filter((inv) => inv.accountId === selectedAccount.value)
-    : invoices
-
   // Função mock de upload
   const handleUpload = (invoiceId, type) => {
     setInvoices((prev) =>
@@ -88,6 +42,8 @@ export default function InvoicePage() {
       })
     )
   }
+
+  console.log("invoices sistema feudal", invoices)
 
   return (
     <div className="w-screen min-h-screen bg-gray-100 p-4 sm:p-6">
@@ -155,7 +111,7 @@ export default function InvoicePage() {
                   <button
                     onClick={() => handleUpload(inv.id, 'receipt')}
                     className={`px-3 py-1 rounded-lg font-bold transition ${
-                      inv.receiptUploaded
+                      inv.Documents.find(doc => doc?.type === 1) != undefined
                         ? 'bg-green-600 text-white hover:bg-green-700'
                         : 'bg-red-600 text-white hover:bg-red-700'
                     }`}
@@ -167,7 +123,7 @@ export default function InvoicePage() {
                   <button
                     onClick={() => handleUpload(inv.id, 'boleto')}
                     className={`px-3 py-1 rounded-lg font-bold transition ${
-                      inv.boletoUploaded
+                      inv.Documents.find(doc => doc?.type === 0) != undefined
                         ? 'bg-green-600 text-white hover:bg-green-700'
                         : 'bg-red-600 text-white hover:bg-red-700'
                     }`}

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import AddDocumentModal from './components/AddDocumentModal'
 import AddInvoiceModal from './components/AddInvoiceTracker'
+import { saveDocument } from "./requests"
 
 function MenuContainer({ color = "bg-red-500", text = "Criar nova conta", textColor = "text-white" }) {
   return (
@@ -85,14 +86,23 @@ function App() {
     { id: 3, name: 'Conta C' },
   ]
 
-  const handleSaveDocument = (doc) => {
-    console.log('Documento salvo:', doc)
-    setModalOpen(false)
+  const handleSaveDocument = async (document) => {
+    console.log('Documento salvo:', document)
+    const requestBody = {
+        file: document.documentFile,
+        type : document.type,
+        invoiceId : document.invoiceId ,
+        cost: document.cost,
+    };
+
+    await saveDocument(requestBody);
+
+    setDocumentModalOpen(false)
   }
 
   const handleSaveInvoice = (invoice) => {
-    console.log('Configuração de fatura salva:', doc)
-    setModalOpen(false)
+    console.log('Configuração de fatura salva:', invoice)
+    setInvoiceModalOpen(false)
   }
 
   return (
