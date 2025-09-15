@@ -2,7 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import AddDocumentModal from './components/AddDocumentModal'
 import AddInvoiceModal from './components/AddInvoiceTracker'
-import { saveDocument } from "./requests"
+import { saveDocument, saveInvoiceTracker } from "./requests"
 
 function MenuContainer({ color = "bg-red-500", text = "Criar nova conta", textColor = "text-white" }) {
   return (
@@ -100,8 +100,10 @@ function App() {
     setDocumentModalOpen(false)
   }
 
-  const handleSaveInvoice = (invoice) => {
+  const handleSaveInvoice = async (invoice) => {
     console.log('Configuração de fatura salva:', invoice)
+    try { await saveInvoiceTracker(invoice);
+    } catch(e) { console.log("Cannot save invoice", e); }
     setInvoiceModalOpen(false)
   }
 

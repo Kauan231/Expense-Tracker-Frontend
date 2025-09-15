@@ -8,7 +8,10 @@ export default function AddInvoiceModal({ isOpen, onClose, onSave }) {
 
   const handleSave = () => {
     if (!invoiceName || !dueDay) return alert('Preencha todos os campos!')
-    onSave({ invoiceName, dueDay })
+    onSave({
+      name: invoiceName,
+      dueDate: dueDay
+    })
     setInvoiceName('')
     setDueDay('')
   }

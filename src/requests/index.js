@@ -23,7 +23,7 @@ export async function saveDocument(document) {
     formData.append("type", document.type);
     formData.append("invoiceId", document.invoiceId);
     formData.append("cost", document.cost);
-    formData.append("file", document.file); // this must be a File or Blob
+    formData.append("file", document.file);
 
     console.log("FormData sending...", [...formData.entries()]);
 
@@ -34,4 +34,22 @@ export async function saveDocument(document) {
 
     let result = await res.json();
     return result.result;
+}
+
+export async function saveInvoiceTracker(invoiceTracker) {
+  const requestBody = {
+    name: invoiceTracker.name,
+    dueDate: invoiceTracker.dueDate
+  };
+
+  const res = await fetch(URL + `/invoiceTrackers/create`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  const result = await res.json();
+  return result.result;
 }
