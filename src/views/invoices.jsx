@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Select from 'react-select'
-import { readAllInvoiceTrackerIds, readAllInvoiceTracker, saveDocument } from "../requests"
+import { readAllInvoiceTrackerIds, readAllInvoiceTracker, saveDocument, URL } from "../requests"
 import GoBackButton from '../components/GoBackButton'
 import UploadInvoiceModal from '../components/UploadInvoiceModal'
 
@@ -118,6 +118,22 @@ export default function InvoicePage() {
                   >
                     Recibo
                   </button>
+
+                  <button
+                    onClick={() => {
+                      const document = inv.Documents.find(doc => doc?.type === 1);
+                      const splittedPath = document.documentPath.split("/");
+                      const documentName = splittedPath[splittedPath.length-1];
+                      window.open(URL+"/uploads/"+documentName, "_blank");
+                    }}
+                    className={`px-2 py-1 rounded-lg font-bold transition ${
+                      inv.Documents.find(doc => doc?.type === 1) != undefined
+                        ? 'bg-blue-600 text-white hover:bg-green-700 ml-2'
+                        : 'hidden'
+                    }`}
+                  >
+                    Ver
+                  </button>
                 </td>
                 <td className="px-4 py-2 text-center">
                   <button
@@ -129,6 +145,22 @@ export default function InvoicePage() {
                     }`}
                   >
                     Boleto
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      const document = inv.Documents.find(doc => doc?.type === 1);
+                      const splittedPath = document.documentPath.split("/");
+                      const documentName = splittedPath[splittedPath.length-1];
+                      window.open(URL+"/uploads/"+documentName, "_blank");
+                    }}
+                    className={`px-2 py-1 rounded-lg font-bold transition ${
+                      inv.Documents.find(doc => doc?.type === 0) != undefined
+                        ? 'bg-blue-600 text-white hover:bg-blue-700 ml-2'
+                        : 'hidden'
+                    }`}
+                  >
+                    Ver
                   </button>
                 </td>
               </tr>

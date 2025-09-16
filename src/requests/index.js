@@ -1,4 +1,4 @@
-const URL = "http://localhost:3000"
+export const URL = "http://localhost:3000"
 
 export async function readAllInvoiceTrackerIds() {
     const skip = 0;
