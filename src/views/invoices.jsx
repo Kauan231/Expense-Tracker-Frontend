@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import Select from 'react-select'
-import { readAllInvoiceTrackerIds, readAllInvoiceTracker } from "../requests"
+import { readAllInvoiceTrackerIds, readAllInvoiceTracker, saveDocument } from "../requests"
 import GoBackButton from '../components/GoBackButton'
+import UploadInvoiceModal from '../components/UploadInvoiceModal'
 
 export default function InvoicePage() {
   const [selectedAccount, setSelectedAccount] = useState(null)
   const [invoices, setInvoices] = useState([])
   const [invoiceTrackers, setInvoiceTrackers] = useState([])
+  const [showUploadModal , setShowUploadModal ] = useState(false)
+  const [currentInvoice, setCurrentInvoice] = useState(null)
+  const [type, setType] = useState(0)
 
   const getInvoiceTrackers = async () => {
     let results = await readAllInvoiceTrackerIds();
@@ -36,18 +40,10 @@ export default function InvoicePage() {
 
   // Função mock de upload
   const handleUpload = (invoiceId, type) => {
-    setInvoices((prev) =>
-      prev.map((inv) => {
-        if (inv.id === invoiceId) {
-          if (type === 'receipt') inv.receiptUploaded = true
-          if (type === 'boleto') inv.boletoUploaded = true
-        }
-        return inv
-      })
-    )
+    setCurrentInvoice(invoiceId)
+    setShowUploadModal(true)
+    setType(type)
   }
-
-  console.log("invoices sistema feudal", invoices)
 
   return (
     <div className="w-screen min-h-screen bg-gray-100 p-4 sm:p-6">
@@ -113,7 +109,7 @@ export default function InvoicePage() {
                 </td>
                 <td className="px-4 py-2 text-center">
                   <button
-                    onClick={() => handleUpload(inv.id, 'receipt')}
+                    onClick={() => handleUpload(inv.id, 1)}
                     className={`px-3 py-1 rounded-lg font-bold transition ${
                       inv.Documents.find(doc => doc?.type === 1) != undefined
                         ? 'bg-green-600 text-white hover:bg-green-700'
@@ -125,7 +121,7 @@ export default function InvoicePage() {
                 </td>
                 <td className="px-4 py-2 text-center">
                   <button
-                    onClick={() => handleUpload(inv.id, 'boleto')}
+                    onClick={() => handleUpload(inv.id, 0)}
                     className={`px-3 py-1 rounded-lg font-bold transition ${
                       inv.Documents.find(doc => doc?.type === 0) != undefined
                         ? 'bg-green-600 text-white hover:bg-green-700'
@@ -140,6 +136,19 @@ export default function InvoicePage() {
           </tbody>
         </table>
       </div>
+
+      <UploadInvoiceModal
+        isOpen={showUploadModal}
+        onClose={() => setShowUploadModal(false)}
+        onSubmit={async (data) => {
+          try { await saveDocument(data)
+          } catch(e) { console.log("saveDocument failed", e) }
+          setShowUploadModal(false)
+          await getInvoiceTracker(selectedAccount?.value);
+        }}
+        invoiceId={currentInvoice}
+        type={type}
+      />
     </div>
   )
 }
