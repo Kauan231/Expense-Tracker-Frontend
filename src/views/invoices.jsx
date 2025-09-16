@@ -30,6 +30,10 @@ export default function InvoicePage() {
     getInvoiceTracker(invoiceTrackers[0]?.value);
   }, [invoiceTrackers])
 
+  useEffect(() => {
+    getInvoiceTracker(selectedAccount?.value);
+  }, [selectedAccount])
+
   // Função mock de upload
   const handleUpload = (invoiceId, type) => {
     setInvoices((prev) =>
