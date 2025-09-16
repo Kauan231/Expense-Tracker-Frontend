@@ -53,3 +53,21 @@ export async function saveInvoiceTracker(invoiceTracker) {
   const result = await res.json();
   return result.result;
 }
+
+export async function createInvoicePeriod(period) {
+  const requestBody = {
+    year: period.year,
+    invoiceTrackerId: period.accountId
+  };
+
+  const res = await fetch(URL + `/invoices/createPeriod`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(requestBody)
+  });
+
+  const result = await res.json();
+  return result.result;
+}

@@ -2,7 +2,8 @@ import { useState } from 'react'
 import './App.css'
 import AddDocumentModal from './components/AddDocumentModal'
 import AddInvoiceModal from './components/AddInvoiceTracker'
-import { saveDocument, saveInvoiceTracker } from "./requests"
+import AddNewPeriodModal from './components/AddNewPeriod'
+import { saveDocument, saveInvoiceTracker, createInvoicePeriod } from "./requests"
 
 function MenuContainer({ color = "bg-red-500", text = "Criar nova conta", textColor = "text-white" }) {
   return (
@@ -73,6 +74,7 @@ function App() {
 
   const [documentModalOpen, setDocumentModalOpen] = useState(false)
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
+  const [periodModalOpen, setPeriodModalOpen] = useState(false)
 
   const invoices = [
     { id: 1, name: 'Invoice 001' },
@@ -107,6 +109,13 @@ function App() {
     setInvoiceModalOpen(false)
   }
 
+  const handleSavePeriod = async (period) => {
+    console.log('Periodo criado:', period)
+    try { await createInvoicePeriod(period);
+    } catch(e) { console.log("Cannot save invoice", e); }
+    setPeriodModalOpen(false)
+  }
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-900 via-indigo-800 to-purple-900 flex flex-col items-center p-4 sm:p-6 gap-6">
       {/* Resumo de custos */}
@@ -131,6 +140,12 @@ function App() {
         >
           <MenuContainer text="Adicionar Nova Fatura" color="bg-yellow-400" textColor="text-gray-900" />
         </button>
+
+        <button
+          onClick={() => setPeriodModalOpen(true)}
+        >
+          <MenuContainer text="Adicionar Novo Período" color="bg-green-400" textColor="text-gray-900" />
+        </button>
       </div>
 
       {/* Lembretes */}
@@ -149,6 +164,12 @@ function App() {
         isOpen={invoiceModalOpen}
         onClose={() => setInvoiceModalOpen(false)}
         onSave={handleSaveInvoice}
+      />
+
+      <AddNewPeriodModal
+        isOpen={periodModalOpen}
+        onClose={() => setPeriodModalOpen(false)}
+        onSave={handleSavePeriod}
       />
     </div>
   )
