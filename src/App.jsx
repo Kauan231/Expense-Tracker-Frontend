@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import AddDocumentModal from './components/AddDocumentModal'
 import AddInvoiceModal from './components/AddInvoiceTracker'
 import AddNewPeriodModal from './components/AddNewPeriod'
-import { saveDocument, saveInvoiceTracker, createInvoicePeriod } from "./requests"
+import { saveDocument, saveInvoiceTracker, createInvoicePeriod, readAllInvoices } from "./requests"
 
 function MenuContainer({ color = "bg-red-500", text = "Criar nova conta", textColor = "text-white" }) {
   return (
@@ -62,7 +62,6 @@ function Reminders({ items }) {
 }
 
 function App() {
-  const totalCost = 1245.75
   const reminders = [
     "Enviar fatura do mês",
     "Revisar documentos pendentes",
@@ -75,6 +74,8 @@ function App() {
   const [documentModalOpen, setDocumentModalOpen] = useState(false)
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
   const [periodModalOpen, setPeriodModalOpen] = useState(false)
+
+  const [totalCost, setTotalCost] = useState(false)
 
   const invoices = [
     { id: 1, name: 'Invoice 001' },
@@ -115,6 +116,20 @@ function App() {
     } catch(e) { console.log("Cannot save invoice", e); }
     setPeriodModalOpen(false)
   }
+
+  const getInvoices = async () => {
+    let results = await readAllInvoices(new Date().getFullYear(), new Date().getMonth());
+
+    const total = results.reduce(
+      (accumulator, currentValue) => accumulator + (currentValue.cost ?? 0),
+      0,
+    );
+    setTotalCost(total)
+  }
+
+  useEffect(() => {
+    getInvoices();
+  }, [])
 
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-900 via-indigo-800 to-purple-900 flex flex-col items-center p-4 sm:p-6 gap-6">

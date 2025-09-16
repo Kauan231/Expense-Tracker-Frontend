@@ -80,3 +80,21 @@ export async function createInvoicePeriod(period) {
   const result = await res.json();
   return result.result;
 }
+
+
+export async function readAllInvoices(year, month) {
+    let requestUrl = URL+`/invoices?skip=0&limit=100`;
+    if(year != undefined) {
+      requestUrl += `&year=${year}`;
+    }
+
+    if(month != undefined) {
+      requestUrl += `&month=${month}`;
+    }
+
+    const res = await fetch(requestUrl, {
+        method: "GET"
+    });
+    let result = await res.json();
+    return result.result;
+}
