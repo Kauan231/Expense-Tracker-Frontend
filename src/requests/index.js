@@ -10,8 +10,17 @@ export async function readAllInvoiceTrackerIds() {
     return result.result;
 }
 
-export async function readAllInvoiceTracker(id) {
-    const res = await fetch(URL+`/invoiceTrackers/${id}`, {
+export async function readAllInvoiceTracker(id, year, month) {
+    let requestUrl = URL+`/invoiceTrackers/${id}?`;
+    if(year != undefined) {
+      requestUrl += `year=${year}`;
+    }
+
+    if(month != undefined) {
+      requestUrl += `&month=${month}`;
+    }
+
+    const res = await fetch(requestUrl, {
         method: "GET"
     });
     let result = await res.json();

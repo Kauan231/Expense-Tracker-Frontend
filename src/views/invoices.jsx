@@ -3,6 +3,7 @@ import Select from 'react-select'
 import { readAllInvoiceTrackerIds, readAllInvoiceTracker, saveDocument, URL } from "../requests"
 import GoBackButton from '../components/GoBackButton'
 import UploadInvoiceModal from '../components/UploadInvoiceModal'
+import YearSelect from '../components/YearSelect'
 
 export default function InvoicePage() {
   const [selectedAccount, setSelectedAccount] = useState(null)
@@ -11,6 +12,7 @@ export default function InvoicePage() {
   const [showUploadModal , setShowUploadModal ] = useState(false)
   const [currentInvoice, setCurrentInvoice] = useState(null)
   const [type, setType] = useState(0)
+  const [yearFilter, setYearFilter] = useState();
 
   const getInvoiceTrackers = async () => {
     let results = await readAllInvoiceTrackerIds();
@@ -20,7 +22,8 @@ export default function InvoicePage() {
 
   const getInvoiceTracker = async (id) => {
     if(id == undefined) { return; }
-    let results = await readAllInvoiceTracker(id);
+    console.log("yearFilter", yearFilter)
+    let results = await readAllInvoiceTracker(id, yearFilter);
     setInvoices(results?.Invoices)
   }
 
@@ -36,7 +39,7 @@ export default function InvoicePage() {
 
   useEffect(() => {
     getInvoiceTracker(selectedAccount?.value);
-  }, [selectedAccount])
+  }, [selectedAccount, yearFilter])
 
   // Função mock de upload
   const handleUpload = (invoiceId, type) => {
@@ -50,15 +53,26 @@ export default function InvoicePage() {
       <GoBackButton/>
       <h1 className="text-3xl font-extrabold text-gray-900 mb-6 mt-6">Faturas</h1>
 
-      {/* Filtro de conta */}
-      <div className="w-full max-w-md mb-6">
-        <Select
-          options={invoiceTrackers}
-          value={selectedAccount}
-          onChange={setSelectedAccount}
-          isClearable
-          placeholder="Filtrar por conta"
-        />
+      <div className="w-full mb-6 flex gap-2">
+        {/* Filtro de conta */}
+        <div className="w-[70%] max-w-md mb-6">
+          <Select
+            options={invoiceTrackers}
+            value={selectedAccount}
+            onChange={setSelectedAccount}
+            isClearable
+            placeholder="Filtrar por conta"
+          />
+        </div>
+
+        {/* Filtro por ano */}
+        <div className="max-w-md mb-6">
+          <YearSelect
+            invoices={invoices}
+            selectedYear={yearFilter}
+            setSelectedYear={setYearFilter}
+          />
+        </div>
       </div>
 
       {/* Lista de faturas */}
