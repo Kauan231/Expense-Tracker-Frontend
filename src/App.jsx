@@ -40,7 +40,7 @@ function Summary({ totalCost }) {
     <div className="w-full sm:w-11/12 md:w-3/4 lg:w-2/3 bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg p-4 sm:p-6 mb-6">
       <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">Resumo de custos  de {new Date().toLocaleString('default', { month: 'long' }).toLocaleUpperCase()}</h2>
       <p className="text-md sm:text-lg md:text-xl text-gray-700">
-        Total: <span className="font-bold text-gray-900">${totalCost}</span>
+        Total: <span className="font-bold text-gray-900">{totalCost}</span>
       </p>
     </div>
   )
@@ -151,7 +151,7 @@ function App() {
 
     // Optional: calculate the total of invoices already uploaded
     let results = await readAllInvoices(year, month);
-    const total = results.reduce((acc, curr) => acc + (curr.cost ?? 0), 0);
+    let total = results.reduce((acc, curr) => acc + (curr.cost ?? 0), 0);
     setTotalCost(total);
   };
 
@@ -168,7 +168,12 @@ function App() {
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-900 via-indigo-800 to-purple-900 flex flex-col items-center p-4 sm:p-6 gap-6">
       {/* Resumo de custos */}
-      <Summary totalCost={totalCost} />
+      <Summary totalCost={
+         new Intl.NumberFormat('pt-BR', {
+          style: 'currency',
+          currency: 'BRL'
+        }).format(totalCost)
+      } />
 
       {/* Menu cards */}
       <div className="w-full flex flex-wrap justify-center gap-6 max-w-7xl">
