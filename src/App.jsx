@@ -117,7 +117,7 @@ function App() {
 
     const year = new Date().getFullYear();
     const month = new Date().getMonth() + 1; // JS month is 0-based
-    const monthName = new Date(year, month - 1).toLocaleString("en-US", { month: "long" });
+    const monthName = new Date(year, month - 1).toLocaleString("pt-Br", { month: "long" }).toLocaleUpperCase();
     const today = new Date().getDate();
 
     let pendingMessages = [];
@@ -135,13 +135,9 @@ function App() {
 
       // Only check if the due date has already passed
       if (today > dueDate) {
-        if (!invoiceForMonth) {
+        if (invoiceForMonth?.status != 1) {
           pendingMessages.push(
             `⚠️ "${tracker.name}" → Nenhum comprovante enviado para o período ${monthName} ${year}. A data de vencimento é ${dueDate}.`
-          );
-        } else if (invoiceForMonth.status !== 1) {
-          pendingMessages.push(
-            `⚠️ "${tracker.name}" → Apenas o boleto foi enviado, porém nenhum comprovante enviado para o período. A data de vencimento é ${dueDate}, ${monthName} ${year}.`
           );
         }
       }
