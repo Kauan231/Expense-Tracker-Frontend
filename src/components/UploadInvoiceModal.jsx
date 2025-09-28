@@ -25,12 +25,12 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-md">
-        <h2 className="text-lg font-bold mb-4">Upload Invoice Document</h2>
+        <h2 className="text-lg font-bold mb-4">Enviar documento</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Cost input */}
           <div>
-            <label className="block text-sm font-medium mb-1">Cost</label>
+            <label className="block text-sm font-medium mb-1">Custo</label>
             <input
               type="number"
               value={cost}
@@ -43,7 +43,7 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
 
           {/* File input */}
           <div>
-            <label className="block text-sm font-medium mb-1">File</label>
+            <label className="block text-sm font-medium mb-1">Arquivo</label>
             <input
               type="file"
               onChange={(e) => setFile(e.target.files[0])}

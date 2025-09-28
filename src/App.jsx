@@ -3,7 +3,7 @@ import './App.css'
 import AddDocumentModal from './components/AddDocumentModal'
 import AddInvoiceModal from './components/AddInvoiceTracker'
 import AddNewPeriodModal from './components/AddNewPeriod'
-import { saveDocument, saveInvoiceTracker, createInvoicePeriod, readAllInvoices } from "./requests"
+import { saveDocument, saveInvoiceTracker, createInvoicePeriod, readAllInvoices, readAllInvoiceTrackerIds, readAllInvoiceTracker } from "./requests"
 
 function MenuContainer({ color = "bg-red-500", text = "Criar nova conta", textColor = "text-white" }) {
   return (
@@ -38,7 +38,7 @@ function MenuContainer({ color = "bg-red-500", text = "Criar nova conta", textCo
 function Summary({ totalCost }) {
   return (
     <div className="w-full sm:w-11/12 md:w-3/4 lg:w-2/3 bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg p-4 sm:p-6 mb-6">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">Resumo de Custos</h2>
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">Resumo de custos  de {new Date().toLocaleString('default', { month: 'long' }).toLocaleUpperCase()}</h2>
       <p className="text-md sm:text-lg md:text-xl text-gray-700">
         Total: <span className="font-bold text-gray-900">${totalCost}</span>
       </p>
@@ -46,48 +46,42 @@ function Summary({ totalCost }) {
   )
 }
 
-function Reminders({ items }) {
+function PendingInvoices ({ messages }) {
+  if (!messages || messages.length === 0) {
+    return (
+      <div className="p-4 bg-green-100 text-green-800 rounded-md text-center">
+        ✅ Todas as faturas do mês foram pagas.
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full sm:w-11/12 md:w-3/4 lg:w-2/3 bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg p-4 sm:p-6">
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-900 mb-4">Lembretes</h2>
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-gray-700">
-        {items.map((item, idx) => (
-          <li key={idx} className="font-medium text-sm sm:text-base p-2 bg-gray-100 rounded-lg shadow-sm">
-            {item}
+    <div className="p-4 bg-yellow-50 border border-yellow-300 rounded-md">
+      <h2 className="text-lg font-semibold mb-2 text-yellow-800">
+        ⚠️ Faturas Vencidas/Pendentes
+      </h2>
+      <ul className="list-disc list-inside space-y-1">
+        {messages.map((msg, index) => (
+          <li
+            key={index}
+            className="text-yellow-900 bg-yellow-100 p-2 rounded-md"
+          >
+            {msg}
           </li>
         ))}
       </ul>
     </div>
-  )
-}
+  );
+};
 
 function App() {
-  const reminders = [
-    "Enviar fatura do mês",
-    "Revisar documentos pendentes",
-    "Atualizar cadastro de clientes",
-    "Verificar documentos antigos",
-    "Preparar relatório financeiro",
-    "Enviar notificações",
-  ]
-
   const [documentModalOpen, setDocumentModalOpen] = useState(false)
   const [invoiceModalOpen, setInvoiceModalOpen] = useState(false)
   const [periodModalOpen, setPeriodModalOpen] = useState(false)
 
   const [totalCost, setTotalCost] = useState(false)
 
-  const invoices = [
-    { id: 1, name: 'Invoice 001' },
-    { id: 2, name: 'Invoice 002' },
-    { id: 3, name: 'Invoice 003' },
-  ]
-
-  const accounts = [
-    { id: 1, name: 'Conta A' },
-    { id: 2, name: 'Conta B' },
-    { id: 3, name: 'Conta C' },
-  ]
+  const [pendingMessages, setPendingMessages] = useState([]);
 
   const handleSaveDocument = async (document) => {
     console.log('Documento salvo:', document)
@@ -117,18 +111,58 @@ function App() {
     setPeriodModalOpen(false)
   }
 
-  const getInvoices = async () => {
-    let results = await readAllInvoices(new Date().getFullYear(), new Date().getMonth());
+  const getPageInfo = async () => {
+    let allInvoiceTrackers = await readAllInvoiceTrackerIds();
+    let allInvoiceTrackerIds = allInvoiceTrackers.map(tracker => tracker.id);
 
-    const total = results.reduce(
-      (accumulator, currentValue) => accumulator + (currentValue.cost ?? 0),
-      0,
-    );
-    setTotalCost(total)
-  }
+    const year = new Date().getFullYear();
+    const month = new Date().getMonth() + 1; // JS month is 0-based
+    const monthName = new Date(year, month - 1).toLocaleString("en-US", { month: "long" });
+    const today = new Date().getDate();
+
+    let pendingMessages = [];
+
+    for (let id of allInvoiceTrackerIds) {
+      let tracker = await readAllInvoiceTracker(id, year, month);
+      const invoices = tracker.Invoices ?? [];
+      const dueDate = tracker.dueDate;
+
+      // Invoice specifically for this month
+      const invoiceForMonth = invoices.find(inv => {
+        const invDate = new Date(inv.date);
+        return invDate.getFullYear() === year && (invDate.getMonth() + 1) === month;
+      });
+
+      // Only check if the due date has already passed
+      if (today > dueDate) {
+        if (!invoiceForMonth) {
+          pendingMessages.push(
+            `⚠️ "${tracker.name}" → Nenhum comprovante enviado para o período ${monthName} ${year}. A data de vencimento é ${dueDate}.`
+          );
+        } else if (invoiceForMonth.status !== 1) {
+          pendingMessages.push(
+            `⚠️ "${tracker.name}" → Apenas o boleto foi enviado, porém nenhum comprovante enviado para o período. A data de vencimento é ${dueDate}, ${monthName} ${year}.`
+          );
+        }
+      }
+    }
+
+    pendingMessages.forEach(msg => console.log(msg));
+
+
+    console.log(pendingMessages)
+    setPendingMessages(pendingMessages);
+
+    // Optional: calculate the total of invoices already uploaded
+    let results = await readAllInvoices(year, month);
+    const total = results.reduce((acc, curr) => acc + (curr.cost ?? 0), 0);
+    setTotalCost(total);
+  };
+
+
 
   useEffect(() => {
-    getInvoices();
+    getPageInfo();
   }, [])
 
   return (
@@ -164,15 +198,15 @@ function App() {
       </div>
 
       {/* Lembretes */}
-      <Reminders items={reminders} />
+      <div className="max-w-xl mx-auto mt-10">
+        <PendingInvoices messages={pendingMessages} />
+      </div>
 
       {/* Modais */}
       <AddDocumentModal
         isOpen={documentModalOpen}
         onClose={() => setDocumentModalOpen(false)}
         onSave={handleSaveDocument}
-        invoices={invoices}
-        accounts={accounts}
       />
 
       <AddInvoiceModal

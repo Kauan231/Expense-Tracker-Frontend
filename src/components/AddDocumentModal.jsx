@@ -19,16 +19,23 @@ export default function AddDocumentModal({ isOpen, onClose, onSave }) {
   }
 
   const getInvoiceTracker = async (id) => {
-    if(id == undefined) { return; }
+    if (!id) return;
+
     let results = await readAllInvoiceTracker(id);
-    let parsedInvoices = results?.Invoices?.map((acc) => ({
-      value: acc.id,
-      label: new Date(acc.date).toLocaleString("pt-BR", {
+
+    const parsedInvoices = results?.Invoices?.map((inv) => ({
+      value: inv.id,
+      label: new Date(inv.date).toLocaleString("pt-BR", {
         month: "short",
         year: "numeric"
-      }).replace(" de", "").toUpperCase()}))
-    setInvoices(parsedInvoices)
-  }
+      }).replace(" de", "").toUpperCase()
+    })) ?? [];
+
+    setInvoices(parsedInvoices);
+
+    // Auto-select the first invoice if available
+    setSelectedInvoice(parsedInvoices[0] ?? null);
+  };
 
   useEffect(() => {
     getInvoiceTrackers();
@@ -86,8 +93,8 @@ export default function AddDocumentModal({ isOpen, onClose, onSave }) {
             onChange={(e) => setType(e.target.value)}
             className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="0">Recibo</option>
-            <option value="1">Boleto</option>
+            <option value="1">Recibo</option>
+            <option value="0">Boleto</option>
           </select>
         </div>
 
@@ -98,8 +105,8 @@ export default function AddDocumentModal({ isOpen, onClose, onSave }) {
             options={invoiceTrackers}
             value={selectedAccount}
             onChange={(acc) => {
-              setSelectedAccount(acc)
-              setSelectedInvoice(null)
+              setSelectedAccount(acc);
+              getInvoiceTracker(acc.value); // fetch and auto-select first invoice
             }}
             placeholder="Selecione uma conta"
           />
@@ -107,7 +114,7 @@ export default function AddDocumentModal({ isOpen, onClose, onSave }) {
 
         {/* Select de Invoice */}
         <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Invoice</label>
+          <label className="block text-gray-700 font-medium mb-1">Fatura</label>
           <Select
             options={invoices}
             value={selectedInvoice}
