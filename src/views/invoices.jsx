@@ -109,7 +109,12 @@ export default function InvoicePage() {
                   year: "numeric"
                 }).replace(" de", "").toUpperCase()}
               </td>
-                <td className="px-4 py-2 text-right">${(inv.cost ?? 0)?.toFixed(2)}</td>
+                <td className="px-4 py-2 text-right">{
+                  new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                  }).format(inv.cost ?? 0)
+                }</td>
                 <td className="px-4 py-2">
                   {inv.status === 0 ? (
                     <span className="px-2 py-1 rounded-full bg-yellow-300 text-yellow-900 font-semibold">
