@@ -6,15 +6,18 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!file || !cost) return;
+    if (!file) return;
 
     // The rest is auto-filled here
-    const payload = {
+    let payload = {
       invoiceId,
       type,
-      cost: parseFloat(cost),
       file
     };
+
+    if(cost != undefined) {
+      payload.cost = parseFloat(cost);
+    }
 
     onSubmit(payload);
     onClose();
@@ -37,7 +40,6 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
               onChange={(e) => setCost(e.target.value)}
               className="w-full border rounded-lg px-3 py-2"
               placeholder="Digite o custo"
-              required
             />
           </div>
 
