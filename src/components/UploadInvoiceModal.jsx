@@ -36,7 +36,7 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
               value={cost}
               onChange={(e) => setCost(e.target.value)}
               className="w-full border rounded-lg px-3 py-2"
-              placeholder="Enter cost"
+              placeholder="Digite o custo"
               required
             />
           </div>
@@ -58,13 +58,13 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
               onClick={onClose}
               className="px-4 py-2 rounded-lg border border-gray-300 hover:bg-gray-100"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
               className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
             >
-              Upload
+              Enviar
             </button>
           </div>
         </form>
