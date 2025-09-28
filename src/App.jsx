@@ -161,6 +161,10 @@ function App() {
     getPageInfo();
   }, [])
 
+  useEffect(() => {
+    getPageInfo();
+  }, [periodModalOpen, invoiceModalOpen, documentModalOpen])
+
   return (
     <div className="w-screen min-h-screen bg-gradient-to-r from-sky-900 via-indigo-800 to-purple-900 flex flex-col items-center p-4 sm:p-6 gap-6">
       {/* Resumo de custos */}
