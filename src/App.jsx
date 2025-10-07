@@ -133,9 +133,12 @@ function App() {
         return invDate.getFullYear() === year && (invDate.getMonth() + 1) === month;
       });
 
-      // Only check if the due date has already passed
-      if (today > dueDate) {
-        if (invoiceForMonth?.status != 1) {
+      if (invoiceForMonth?.status != 1) {
+        if (today > dueDate) {
+          pendingMessages.push(
+            `❗ "${tracker.name}" → Nenhum comprovante enviado para o período ${monthName} ${year}. A fatura venceu em ${dueDate}.`
+          );
+        } else {
           pendingMessages.push(
             `⚠️ "${tracker.name}" → Nenhum comprovante enviado para o período ${monthName} ${year}. A data de vencimento é ${dueDate}.`
           );
