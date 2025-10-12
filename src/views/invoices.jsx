@@ -168,7 +168,7 @@ export default function InvoicePage() {
 
                   <button
                     onClick={() => {
-                      const document = inv.Documents.find(doc => doc?.type === 1);
+                      const document = inv.Documents.find(doc => doc?.type === 0);
                       const splittedPath = document.documentPath.split("/");
                       const documentName = splittedPath[splittedPath.length-1];
                       window.open(URL+"/uploads/"+documentName, "_blank");
