@@ -41,7 +41,6 @@ export default function InvoicePage() {
     getInvoiceTracker(selectedAccount?.value);
   }, [selectedAccount, yearFilter])
 
-  // Função mock de upload
   const handleUpload = (invoiceId, type) => {
     setCurrentInvoice(invoiceId)
     setShowUploadModal(true)
