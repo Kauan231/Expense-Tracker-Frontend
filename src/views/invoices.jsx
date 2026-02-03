@@ -142,7 +142,7 @@ export default function InvoicePage() {
                       const document = inv.Documents.find(doc => doc?.type === 1);
                       const splittedPath = document.documentPath.split("/");
                       const documentName = splittedPath[splittedPath.length-1];
-                      window.open(URL+"/uploads/"+documentName, "_blank");
+                      window.electronAPI.openFile(documentName);
                     }}
                     className={`px-2 py-1 rounded-lg font-bold transition ${
                       inv.Documents.find(doc => doc?.type === 1) != undefined
@@ -170,7 +170,7 @@ export default function InvoicePage() {
                       const document = inv.Documents.find(doc => doc?.type === 0);
                       const splittedPath = document.documentPath.split("/");
                       const documentName = splittedPath[splittedPath.length-1];
-                      window.open(URL+"/uploads/"+documentName, "_blank");
+                      window.electronAPI.openFile(documentName);
                     }}
                     className={`px-2 py-1 rounded-lg font-bold transition ${
                       inv.Documents.find(doc => doc?.type === 0) != undefined
