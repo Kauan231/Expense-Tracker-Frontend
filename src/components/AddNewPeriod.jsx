@@ -26,11 +26,10 @@ export default function AddNewPeriodModal({ isOpen, onClose, onSave }) {
   if (!isOpen) return null
 
   const handleSave = () => {
-    if (!selectedAccount || !year)
+    if (!year)
       return alert('Preencha todos os campos!')
 
     onSave({
-      accountId: selectedAccount.value,
       year: parseFloat(year),
     })
 
@@ -43,20 +42,6 @@ export default function AddNewPeriodModal({ isOpen, onClose, onSave }) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6">
         <h2 className="text-2xl font-extrabold text-gray-900 mb-4">Adicionar novo período</h2>
-
-        {/* Select de Conta */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-medium mb-1">Conta</label>
-          <Select
-            options={invoiceTrackers}
-            value={selectedAccount}
-            onChange={(acc) => {
-              setSelectedAccount(acc)
-              setSelectedInvoice(null)
-            }}
-            placeholder="Selecione uma conta"
-          />
-        </div>
 
         {/* Ano */}
         <div className="mb-6">
