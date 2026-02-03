@@ -22,7 +22,6 @@ export default function InvoicePage() {
 
   const getInvoiceTracker = async (id) => {
     if(id == undefined) { return; }
-    console.log("yearFilter", yearFilter)
     let results = await readAllInvoiceTracker(id, yearFilter);
     setInvoices(results?.Invoices)
   }
@@ -192,7 +191,7 @@ export default function InvoicePage() {
         onClose={() => setShowUploadModal(false)}
         onSubmit={async (data) => {
           try { await saveDocument(data)
-          } catch(e) { console.log("saveDocument failed", e) }
+          } catch(e) {}
           setShowUploadModal(false)
           await getInvoiceTracker(selectedAccount?.value);
         }}
