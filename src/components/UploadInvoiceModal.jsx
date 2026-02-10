@@ -6,7 +6,6 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!file) return;
 
     // The rest is auto-filled here
     let payload = {
@@ -50,7 +49,6 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
               type="file"
               onChange={(e) => setFile(e.target.files[0])}
               className="w-full"
-              required
             />
           </div>
 
