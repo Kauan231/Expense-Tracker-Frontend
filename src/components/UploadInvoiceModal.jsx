@@ -18,6 +18,8 @@ export default function UploadInvoiceModal({ isOpen, onClose, onSubmit, invoiceI
       payload.cost = parseFloat(cost);
     }
 
+    setCost("");
+    setFile(null);
     onSubmit(payload);
     onClose();
   };
