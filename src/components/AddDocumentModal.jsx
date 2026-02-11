@@ -50,7 +50,7 @@ export default function AddDocumentModal({ isOpen, onClose, onSave }) {
   if (!isOpen) return null
 
   const handleSave = () => {
-    if (!documentFile || !selectedAccount || !selectedInvoice)
+    if (!documentFile && !cost && (!selectedAccount || !selectedInvoice))
       return alert('Preencha todos os campos!')
 
     let payload = {
