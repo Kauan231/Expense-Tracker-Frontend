@@ -98,3 +98,20 @@ export async function readAllInvoices(year, month) {
     let result = await res.json();
     return result.result;
 }
+
+export async function readAllInvoiceTrackers(year, month) {
+    let requestUrl = URL+`/invoiceTrackers?`;
+    if(year != undefined) {
+      requestUrl += `year=${year}`;
+    }
+
+    if(month != undefined) {
+      requestUrl += `&month=${month}`;
+    }
+
+    const res = await fetch(requestUrl, {
+        method: "GET"
+    });
+    let result = await res.json();
+    return result.result;
+}
