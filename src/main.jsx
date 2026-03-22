@@ -4,6 +4,7 @@ import { HashRouter, Routes, Route } from "react-router-dom";
 import './index.css'
 import App from './App.jsx'
 import InvoicePage from './views/invoices.jsx';
+import GraphPage from './views/graph.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,6 +16,11 @@ createRoot(document.getElementById('root')).render(
         />
         <Route path="/invoices" element={
           <InvoicePage />
+        }
+        />
+
+        <Route path="/graph" element={
+          <GraphPage />
         }
         />
       </Routes>

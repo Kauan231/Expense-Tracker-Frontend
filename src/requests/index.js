@@ -10,7 +10,7 @@ export async function readAllInvoiceTrackerIds() {
     return result.result;
 }
 
-export async function readAllInvoiceTracker(id, year, month) {
+export async function readAllInvoiceTrackerById(id, year, month) {
     let requestUrl = URL+`/invoiceTrackers/${id}?`;
     if(year != undefined) {
       requestUrl += `year=${year}`;
@@ -86,6 +86,23 @@ export async function readAllInvoices(year, month) {
     let requestUrl = URL+`/invoices?skip=0&limit=100`;
     if(year != undefined) {
       requestUrl += `&year=${year}`;
+    }
+
+    if(month != undefined) {
+      requestUrl += `&month=${month}`;
+    }
+
+    const res = await fetch(requestUrl, {
+        method: "GET"
+    });
+    let result = await res.json();
+    return result.result;
+}
+
+export async function readAllInvoiceTrackers(year, month) {
+    let requestUrl = URL+`/invoiceTrackers?`;
+    if(year != undefined) {
+      requestUrl += `year=${year}`;
     }
 
     if(month != undefined) {
