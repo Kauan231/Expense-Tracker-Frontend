@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Select from 'react-select'
-import { readAllInvoiceTrackerIds, readAllInvoiceTracker, saveDocument, URL } from "../requests"
+import { readAllInvoiceTrackerIds, readAllInvoiceTrackerById, saveDocument, URL } from "../requests"
 import GoBackButton from '../components/GoBackButton'
 import UploadInvoiceModal from '../components/UploadInvoiceModal'
 import YearSelect from '../components/YearSelect'
@@ -22,8 +22,7 @@ export default function InvoicePage() {
 
   const getInvoiceTracker = async (id) => {
     if(id == undefined) { return; }
-    console.log("yearFilter", yearFilter)
-    let results = await readAllInvoiceTracker(id, yearFilter);
+    let results = await readAllInvoiceTrackerById(id, yearFilter);
     setInvoices(results?.Invoices)
   }
 

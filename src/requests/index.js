@@ -10,7 +10,7 @@ export async function readAllInvoiceTrackerIds() {
     return result.result;
 }
 
-export async function readAllInvoiceTracker(id, year, month) {
+export async function readAllInvoiceTrackerById(id, year, month) {
     let requestUrl = URL+`/invoiceTrackers/${id}?`;
     if(year != undefined) {
       requestUrl += `year=${year}`;

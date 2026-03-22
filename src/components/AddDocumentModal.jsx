@@ -1,6 +1,6 @@
 import Select from 'react-select'
 import { useState, useEffect } from 'react'
-import { readAllInvoiceTrackerIds, readAllInvoiceTracker } from '../requests'
+import { readAllInvoiceTrackerIds, readAllInvoiceTrackerById } from '../requests'
 
 export default function AddDocumentModal({ isOpen, onClose, onSave }) {
   const [documentFile, setDocumentFile] = useState(null)
@@ -21,7 +21,7 @@ export default function AddDocumentModal({ isOpen, onClose, onSave }) {
   const getInvoiceTracker = async (id) => {
     if (!id) return;
 
-    let results = await readAllInvoiceTracker(id);
+    let results = await readAllInvoiceTrackerById(id);
 
     const parsedInvoices = results?.Invoices?.map((inv) => ({
       value: inv.id,

@@ -12,7 +12,7 @@ import {
   createInvoicePeriod,
   readAllInvoices,
   readAllInvoiceTrackerIds,
-  readAllInvoiceTracker,
+  readAllInvoiceTrackerById,
 } from "./requests";
 
 
@@ -147,7 +147,7 @@ function App() {
     let pendingMessages = [];
 
     for (let id of allInvoiceTrackerIds) {
-      let tracker = await readAllInvoiceTracker(id, year, month);
+      let tracker = await readAllInvoiceTrackerById(id, year, month);
       const invoices = tracker.Invoices ?? [];
       const dueDate = tracker.dueDate;
 
