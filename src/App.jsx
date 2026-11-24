@@ -196,18 +196,33 @@ function App() {
         }).format(totalCost)}
       />
 
-      <Link
-        to="/graph"
-        className="inline-flex items-center gap-2 px-6 py-2
-                  bg-gradient-to-r from-amber-500 to-orange-600
-                  text-white font-semibold
-                  rounded-xl shadow-lg
-                  hover:from-amber-400 hover:to-orange-500
-                  hover:scale-105 active:scale-95
-                  transition-all duration-200"
-      >
-        📊 Visão de gastos
-      </Link>
+      <div className="flex flex-wrap justify-center gap-4">
+        <Link
+          to="/graph"
+          className="inline-flex items-center gap-2 px-6 py-2
+                    bg-gradient-to-r from-amber-500 to-orange-600
+                    text-white font-semibold
+                    rounded-xl shadow-lg
+                    hover:from-amber-400 hover:to-orange-500
+                    hover:scale-105 active:scale-95
+                    transition-all duration-200"
+        >
+          📊 Visão de gastos
+        </Link>
+
+        <Link
+          to="/settings"
+          className="inline-flex items-center gap-2 px-6 py-2
+                    bg-gradient-to-r from-slate-700 to-slate-800
+                    text-white font-semibold
+                    rounded-xl shadow-lg
+                    hover:from-slate-600 hover:to-slate-700
+                    hover:scale-105 active:scale-95
+                    transition-all duration-200"
+        >
+          ⚙️ Configurações
+        </Link>
+      </div>
 
       <div className="w-full flex flex-wrap justify-center gap-6 max-w-7xl">
         <button onClick={() => setDocumentModalOpen(true)}>
